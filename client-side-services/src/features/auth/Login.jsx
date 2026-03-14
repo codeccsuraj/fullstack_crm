@@ -1,12 +1,13 @@
 import React from 'react'
-import TextInput from '../../components/fom/TextInput'
-import ButtonInput from '../../components/fom/ButtonInput'
-import CheckBox from '../../components/fom/CheckBox'
+import TextInput from '../../components/form/TextInput'
+import ButtonInput from '../../components/form/ButtonInput'
+import CheckBox from '../../components/form/CheckBox'
+import {Link} from 'react-router-dom'
 
 const Login = () => {
   return (
     <div className="container-fluid">
-      <div className="row">
+      <div className="row min-vh-100">
         {/* Left side image */}
         <div className="col-md-8 d-none d-md-block p-0">
           <img
@@ -19,16 +20,19 @@ const Login = () => {
         {/* Right side login form */}
         <div className="col-md-4 d-flex align-items-center justify-content-center bg-secondary-subtle">
           <div className="w-75">
-            <p className="mb-4 h4 text-center">Welcome Back</p>
+            <p className="h4 text-center">Welcome Back</p>
+            <p className='h6 text-center mb-4'>Login here to continue</p>
             <form className='mt-4'>
               <div className="mb-4">
-                <TextInput 
+                <TextInput
                   label='Email address'
+                  placeholder='Enter your email'
                 />
               </div>
               <div className="mb-4">
-                <TextInput 
+                <TextInput
                   label='Password'
+                  placeholder='Enter your password'
                 />
               </div>
               <div className="d-flex justify-content-between align-items-center mb-3">
@@ -39,14 +43,14 @@ const Login = () => {
                 <a href="#" className="text-decoration-none">Forgot password?</a>
               </div>
               <div className='mt-4'>
-                <ButtonInput 
+                <ButtonInput
                   label='Login'
                   className='btn-main w-100'
                 />
               </div>
             </form>
             <p className="text-center mt-2">
-              Don’t have an account? <a href="#" className="text-decoration-none">Sign up</a>
+              Don’t have an account? <Link to="/register" className="text-decoration-none">Sign up</Link>
             </p>
           </div>
         </div>

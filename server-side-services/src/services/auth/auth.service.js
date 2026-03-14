@@ -1,4 +1,5 @@
 import { AuthModel } from "../../models/auth/auth.model.js";
+import { generateAccessToken } from "../../utils/jwt.utils.js";
 
 class AuthServices {
     async create(data) {
@@ -32,11 +33,20 @@ class AuthServices {
             }
 
             const result = await AuthModel.create(data);
+
+            const tokenPayload = {
+                id : result._id,
+                email : result.email,
+                role : result.role
+            }
+
+            const token = generateAccessToken(tokenPayload)
             return {
                 status: 201,
                 success: true,
                 message: "User registered successfully",
-                data : result
+                data : result,
+                token
             }
         } catch (error) {
             console.error("Error occurred in AuthServices - create", error)

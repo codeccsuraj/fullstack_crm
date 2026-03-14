@@ -2,7 +2,8 @@ import express from "express";
 import http from "http";
 import dotenv from "dotenv";
 import getSecondaryConnection from "./connections/mongo.connection.js";
-import { createUser } from "./controllers/auth/auth.controller.js";
+import authRoutes from "./routes/auth/auth.routes.js";
+import corsMiddleware  from './config/cors.config.js'
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ const initializeApp = async () => {
     // Basic middlewares
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
+    app.use(corsMiddleware)
 
     // Health check route
     app.get("/health", (req, res) => {
@@ -24,7 +26,7 @@ const initializeApp = async () => {
       });
     });
 
-    app.get("/getInfo", createUser);
+    app.use("/api/v1/auth", authRoutes);
 
     // Database connection
     await getSecondaryConnection();
