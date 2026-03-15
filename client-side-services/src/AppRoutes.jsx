@@ -1,12 +1,16 @@
 import React, { Suspense } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import PageLoader from './components/loader/PageLoader';
+import ProtectedRoute from './guard/ProtectedRoute';
 
 
 const HomePage = React.lazy(() => import("./shared/home/HomePage"))
 const Login = React.lazy(() => import("./features/auth/Login"))
 const Register = React.lazy(() => import("./features/auth/Register"))
+const ForgotPassword = React.lazy(() => import("./features/auth/ForgotPassword"))
 
+const UserLayout = React.lazy(() => import("./shared/user/UserLayout"))
+const UserProfile = React.lazy(() => import("./shared/user/UserProfile"))
 const AppRoutes = () => {
     const router = createBrowserRouter([
         {
@@ -32,6 +36,31 @@ const AppRoutes = () => {
                     <Register />
                 </Suspense>
             )
+        },
+        {
+            path: '/forgot-password',
+            element: (
+                <Suspense fallback={<PageLoader />}>
+                    <ForgotPassword />
+                </Suspense>
+            ),
+        },
+        {
+            path: '/profile',
+            element: (
+                <ProtectedRoute>
+                    <Suspense fallback={<PageLoader />}>
+                        <UserLayout />
+                    </Suspense>
+                </ProtectedRoute>
+            ),
+             children : [
+                {path : '', element : (
+                    <Suspense fallback={<PageLoader />}>
+                        <UserProfile />
+                    </Suspense>
+                )}
+            ]
         },
     ]);
 

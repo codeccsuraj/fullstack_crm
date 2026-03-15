@@ -1,9 +1,14 @@
 import React from 'react'
-import PageLoader from '../../components/loader/PageLoader'
 import Navbar from '../../components/header/Navbar'
+import { useSelector } from 'react-redux'
+import Home from './Home'
 
 const HomePage = () => {
-  return (
+  const { user, token, isAuthenticated } = useSelector((state) => state.auth);
+
+  return isAuthenticated ? (
+    <Home />
+  ) : (
     <div className='container-fluid p-0 m-0'>
       <Navbar />
       <div className="container-sm">

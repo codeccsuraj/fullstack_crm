@@ -1,14 +1,25 @@
-import React from "react";
-import { data, Link } from "react-router-dom";
+import React, { useState } from "react";
+import { data, Link, useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import TextInput from '../../components/form/TextInput'
 import ButtonInput from '../../components/form/ButtonInput'
-import CheckBox from '../../components/form/CheckBox'
 import * as Yup from "yup";
 import { useRegisterMutation } from "../../store/api/authApi";
+import Alert from "../../components/error/Alert";
+import { useDispatch } from "react-redux";
+import { setUserSession } from "../../store/slice/authSlice";
 
 const Register = () => {
   const [register, { isLoading, isError }] = useRegisterMutation();
+  const dispatch = useDispatch();
+  const [alert, setAlert] = useState({
+    message: "",
+    type: "success",
+  });
+
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from = location.state?.from?.pathname || "/";
 
   const validationSchema = Yup.object({
     name: Yup.string()
@@ -42,9 +53,22 @@ const Register = () => {
       try {
         const result = await register(values).unwrap();
 
-        console.log("object", result)
+        if (result?.success) {
+          setAlert({
+            message: result?.message || "Registration successful",
+            type: "success",
+          });
+          dispatch(setUserSession({
+            user: result.data,
+            token: result.token
+          }))
+        }
+        navigate(from, { replace: true });
       } catch (error) {
-        console.error("Error occurred in adding user", error);
+        setAlert({
+          message: error?.data?.message || "Something went wrong",
+          type: "danger",
+        });
       }
     },
   });
@@ -70,6 +94,15 @@ const Register = () => {
             <p className="h6 text-center mb-2">
               provide below details to sign up
             </p>
+
+            {alert.message && (
+              <Alert
+                message={alert.message}
+                type={alert.type}
+                duration={5000}
+                onClose={() => setAlert({ message: "", type: "success" })}
+              />
+            )}
 
             <form onSubmit={formik.handleSubmit} className="mt-4">
 

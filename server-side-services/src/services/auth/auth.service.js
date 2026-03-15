@@ -1,11 +1,12 @@
 import { AuthModel } from "../../models/auth/auth.model.js";
-import { generateAccessToken } from "../../utils/jwt.utils.js";
+import { generateAccessToken } from "../../utility/jwt.utils.js";
 
 class AuthServices {
     async create(data) {
         try {
+
             const checkByEmail = await this.findByEmail(data.email);
-            const checkByMobile = await this.findByEmail(data.mobile);
+            const checkByMobile = await this.findByMobile(data.mobile);
             const checkByUsername = await this.findByUsername(data.username);
 
             if (checkByEmail?.success) {
@@ -35,26 +36,42 @@ class AuthServices {
             const result = await AuthModel.create(data);
 
             const tokenPayload = {
-                id : result._id,
-                email : result.email,
-                role : result.role
-            }
+                id: result._id,
+                email: result.email,
+                role: result.role
+            };
 
-            const token = generateAccessToken(tokenPayload)
+            const token = generateAccessToken(tokenPayload);
+
             return {
                 status: 201,
                 success: true,
                 message: "User registered successfully",
-                data : result,
+                data: result,
                 token
-            }
+            };
+
         } catch (error) {
-            console.error("Error occurred in AuthServices - create", error)
+
+            // HANDLE DUPLICATE KEY ERROR
+            if (error.code === 11000) {
+
+                const field = Object.keys(error.keyPattern)[0];
+
+                return {
+                    status: 301,
+                    success: false,
+                    message: `User already exists with this ${field}`
+                };
+            }
+
+            console.error("Error occurred in AuthServices - create", error);
+
             return {
                 status: 500,
                 success: false,
                 message: "Error occurred while adding user"
-            }
+            };
         }
     }
 
@@ -82,7 +99,7 @@ class AuthServices {
                 status: 200,
                 success: true,
                 message: "Data found",
-                data: user
+                data: result
             }
 
         } catch (error) {
@@ -119,7 +136,7 @@ class AuthServices {
                 status: 200,
                 success: true,
                 message: "Data found",
-                data: user
+                data: result
             }
 
         } catch (error) {
@@ -156,7 +173,7 @@ class AuthServices {
                 status: 200,
                 success: true,
                 message: "Data found",
-                data: user
+                data: result
             }
 
         } catch (error) {
@@ -193,7 +210,7 @@ class AuthServices {
                 status: 200,
                 success: true,
                 message: "Data found",
-                data: user
+                data: result
             }
 
         } catch (error) {
@@ -204,6 +221,10 @@ class AuthServices {
                 message: "Something went wrong while fetching details"
             }
         }
+    }
+
+    async updateById (id) {
+        
     }
 }
 
