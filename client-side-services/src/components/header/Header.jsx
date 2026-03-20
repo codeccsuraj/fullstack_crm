@@ -75,7 +75,6 @@ const Header = () => {
                             icon={FaUser}
                             items={[
                                 { label: "Profile", path: "/profile", icon: FiUser },
-                                { label: "Settings", path: "/settings", icon: FiSettings },
                                 { label: "Logout", icon: FiLogOut, onClick: handleLogout }
                             ]}
                         />

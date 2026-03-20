@@ -223,8 +223,40 @@ class AuthServices {
         }
     }
 
-    async updateById (id) {
-        
+    async updateById(id, data) {
+        try {
+
+            const result = await AuthModel.findByIdAndUpdate(
+                id,
+                data,
+                { returnDocument: 'after', runValidators: true }
+            );
+
+            if (!result) {
+                return {
+                    status: 404,
+                    success: false,
+                    message: "Document not found"
+                };
+            }
+
+            return {
+                status: 200,
+                success: true,
+                message: "Updated data successfully",
+                data: result
+            };
+
+        } catch (error) {
+
+            console.error("Error occurred in AuthServices - updateById", error);
+
+            return {
+                status: 500,
+                success: false,
+                message: "Something went wrong while updating data"
+            };
+        }
     }
 }
 

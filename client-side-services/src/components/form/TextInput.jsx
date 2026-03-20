@@ -1,24 +1,47 @@
-import React from 'react';
-import '../../styles/form.css'
+import React, { useState } from 'react';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+
 const TextInput = ({
     type = 'text',
     value,
     onChange,
-    className = '',
     name = '',
     placeholder = 'Enter your input',
-    label = "text",
-    ...rest
+    toggleEye = false,
 }) => {
+
+    const [togglePassword, setTogglePassword] = useState(false);
+
+    const handleToggle = () => {
+        setTogglePassword(prev => !prev);
+    };
+
+    const inputType =
+        type === "password" && toggleEye
+            ? (togglePassword ? "text" : "password")
+            : type;
+
     return (
-        <input
-            placeholder={placeholder}
-            className="form-control"
-            type={type} 
-            value={value}
-            onChange={onChange}
-            name={name}
-        />
+        <div className='position-relative'>
+            <input
+                placeholder={placeholder}
+                className="form-control"
+                type={inputType}
+                value={value}
+                onChange={onChange}
+                name={name}
+            />
+
+            {type === "password" && toggleEye && (
+                <span
+                    className="toggle-eye"
+                    onClick={handleToggle}
+                    style={{ cursor: "pointer" }}
+                >
+                    {togglePassword ? <FaEyeSlash /> : <FaEye />}
+                </span>
+            )}
+        </div>
     );
 };
 

@@ -34,5 +34,21 @@ const authDocumentValidations = Joi.object().keys({
         })
     })
 })
-
 export default authDocumentValidations;
+
+export const changePasswordValidations = Joi.object({
+    email: Joi.string().email().trim().lowercase().required().messages({
+        "string.email": "Please provide a valid email",
+        "string.empty": "Email is required",
+        "any.required": "Email is required"
+    }),
+    oldPassword: Joi.string().trim().required().messages({
+        "string.empty": "Old password is required",
+        "any.required": "Old password is required"
+    }),
+    newPassword: Joi.string().min(6).trim().required().messages({
+        "string.empty": "New password is required",
+        "string.min": "New password must be at least 6 characters",
+        "any.required": "New password is required"
+    }),
+});

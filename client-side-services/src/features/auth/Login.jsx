@@ -60,6 +60,7 @@ const Login = () => {
       }
     },
   });
+  
   return (
     <div className="container-fluid">
       <div className="row min-vh-100">
@@ -103,11 +104,12 @@ const Login = () => {
               <div className="mb-4">
                 <label htmlFor="password" className='form=label'>Password</label>
                 <TextInput
-                  label='Password'
+                  type='password'
                   placeholder='Enter your password'
                   name='password'
                   value={formik.values.password}
                   onChange={formik.handleChange}
+                  toggleEye={true}
                 />
                 {formik.touched.password && formik.errors.password && (
                   <small className="text-danger">{formik.errors.password}</small>

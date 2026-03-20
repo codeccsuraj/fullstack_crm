@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 import { FaBars, FaUser, FaCog, FaChartBar } from 'react-icons/fa'
 import { motion } from 'framer-motion'
+import { FaKey } from "react-icons/fa";
 
 const UserLayout = () => {
   const [collapsed, setCollapsed] = useState(false)
@@ -12,9 +13,8 @@ const UserLayout = () => {
 
   // Define your sidebar links dynamically
   const navItems = [
-    { path: '', label: 'Account Info', icon: <FaUser /> },
-    { path: '/settings', label: 'Settings', icon: <FaCog /> },
-    { path: '/reports', label: 'Reports', icon: <FaChartBar /> },
+    { path: '/profile', label: 'Account Info', icon: <FaUser /> },
+    { path: 'change-password', label: 'Change password', icon: <FaKey /> },
   ]
 
   return (
@@ -33,12 +33,12 @@ const UserLayout = () => {
         </div>
         <ul className="nav flex-column">
           {navItems.map((item) => (
-            <li className="nav-item" key={item.path}>
+            <li className="nav-item" key={item.path} title={item.label}>
               <NavLink
                 to={item.path}
                 end
                 className={({ isActive }) =>
-                  `nav-link d-flex align-items-center ${isActive ? 'active-link' : 'inactive-link'
+                  `nav-link d-flex align-items-center ${isActive ? 'bg-dark text-light' : 'inactive-link'
                   }`
                 }
               >

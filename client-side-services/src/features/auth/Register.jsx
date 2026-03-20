@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { data, Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import TextInput from '../../components/form/TextInput'
 import ButtonInput from '../../components/form/ButtonInput'
@@ -164,13 +164,6 @@ const Register = () => {
                 {formik.touched.password && formik.errors.password && (
                   <small className="text-danger">{formik.errors.password}</small>
                 )}
-              </div>
-
-              <div className="d-flex justify-content-between align-items-center mb-3">
-
-                <Link to="/forgot-password" className="text-decoration-none">
-                  Forgot password?
-                </Link>
               </div>
 
               <div className="mt-4">

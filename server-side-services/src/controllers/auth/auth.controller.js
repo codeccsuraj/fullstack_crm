@@ -110,3 +110,147 @@ export const getUserById = async (req, res) => {
         });
     }
 }
+
+export const changePassword = async (req, res) => {
+    try {
+
+        const { email, oldPassword, newPassword } = req.body;
+        const user = await authService.findByEmail(email);
+
+        if (!user.success || !user.data) {
+            return res.status(404).json({
+                success: false,
+                message: "No user found"
+            });
+        }
+
+        // check old password
+        if (user.data.password !== oldPassword) {
+            return res.status(401).json({
+                success: false,
+                message: "Old password is incorrect"
+            });
+        }
+
+        const updateResult = await authService.updateById(
+            user.data._id,
+            { password: newPassword }
+        );
+
+        return res.status(200).json({
+            success: true,
+            message: "Password updated successfully"
+        });
+
+    } catch (error) {
+
+        console.error("Error occurred in changePassword:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Error occurred while changing password"
+        });
+    }
+};
+
+export const verifyEmail = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const checkUserByEmail = await authService.findByEmail(email);
+
+        if (!checkUserByEmail.success || !checkUserByEmail.data) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found with this email"
+            })
+        }
+        const user = checkUserByEmail.data;
+        const otp = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
+
+        const setOtp = await authService.updateById(user._id, { otp : otp, otpExpiry: Date.now() + 5 * 60 * 1000 });
+
+        if (!setOtp.success) {
+            return res.status(400).json({
+                success: false,
+                message: "Failed to generate otp. try again"
+            })
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "OTP sent to your mail. Please verify.",
+            data: {
+                email: user.email,
+                otp: otp
+            }
+        })
+    } catch (error) {
+        console.error("Error occurred in changePassword:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Error occurred while changing password"
+        });
+    }
+}
+
+export const resetPassword = async (req, res) => {
+    try {
+        const { otp, email, password } = req.body;
+
+        if (!otp || !email || !password) {
+            return res.status(400).json({
+                success: false,
+                message: "All fields are required",
+            });
+        }
+
+        const checkUserByEmail = await authService.findByEmail(email);
+
+        if (!checkUserByEmail.success || !checkUserByEmail.data) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found with this email"
+            })
+        }
+        const user = checkUserByEmail.data;
+
+        if (user.otp !== otp) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid OTP",
+            });
+        }
+
+       if (user.otpExpiry && Date.now() > user.otpExpiry) {
+            return res.status(400).json({
+                success: false,
+                message: "OTP expired",
+            });
+        }
+
+        const updateUser = await authService.updateById(user._id, {
+            password: password,
+            otp: null,
+            otpExpiry: null,
+        });
+
+        if (!updateUser.success) {
+            return res.status(400).json({
+                success: false,
+                message: "Failed to reset password",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Password reset successfully",
+        });
+
+    } catch (error) {
+        console.error("Error in resetPassword:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Error occurred while resetting password",
+        });
+    }
+}
