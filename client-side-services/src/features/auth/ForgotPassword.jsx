@@ -6,8 +6,6 @@ import * as Yup from 'yup'
 import Alert from '../../components/error/Alert';
 import { Link } from 'react-router-dom';
 import { useForgetPasswordMutation } from '../../store/api/authApi';
-import Modal from '../../components/modal/Modal';
-import OtpInput from './OtpInput';
 import ResetPassword from './ResetPassword';
 
 const ForgotPassword = () => {

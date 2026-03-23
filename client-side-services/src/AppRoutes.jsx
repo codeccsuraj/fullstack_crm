@@ -2,6 +2,8 @@ import React, { Suspense } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import PageLoader from './components/loader/PageLoader';
 import ProtectedRoute from './guard/ProtectedRoute';
+import UserProfileLayout from './features/user/UserProfileLayout';
+import UpdatePersonalInfo from './features/user/update/UpdatePersonalInfo';
 
 
 const HomePage = React.lazy(() => import("./shared/home/HomePage"))
@@ -56,17 +58,38 @@ const AppRoutes = () => {
                     </Suspense>
                 </ProtectedRoute>
             ),
-             children : [
-                {path : '', element : (
-                    <Suspense fallback={<PageLoader />}>
-                        <UserProfile />
-                    </Suspense>
-                )},
-                {path : 'change-password', element : (
-                    <Suspense fallback={<PageLoader />}>
-                        <ChangePassword />
-                    </Suspense>
-                )},
+            children: [
+                {
+                    path: '', element: (
+                        <Suspense fallback={<PageLoader />}>
+                            <UserProfile />
+                        </Suspense>
+                    )
+                },
+                {
+                    path: 'change-password', element: (
+                        <Suspense fallback={<PageLoader />}>
+                            <ChangePassword />
+                        </Suspense>
+                    )
+                },
+                {
+                    path: 'create-profile',
+                    element: (
+                        <Suspense fallback={<PageLoader />}>
+                            <UserProfileLayout />
+                        </Suspense>
+                    ),
+                    children: [
+                        {
+                            path: '', element: (
+                                <Suspense fallback={<PageLoader />}>
+                                    <UpdatePersonalInfo />
+                                </Suspense>
+                            )
+                        }
+                    ]
+                },
             ]
         },
     ]);

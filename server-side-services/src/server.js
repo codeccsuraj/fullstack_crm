@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import getSecondaryConnection from "./connections/mongo.connection.js";
 import authRoutes from "./routes/auth/auth.routes.js";
 import corsMiddleware  from './config/cors.config.js'
+import userRoutes from "./routes/users/user.routes.js";
 
 dotenv.config();
 
@@ -14,8 +15,8 @@ const initializeApp = async () => {
   try {
 
     // Basic middlewares
-    app.use(express.json());
-    app.use(express.urlencoded({ extended: true }));
+    app.use(express.json({limit : '3mb'}));
+    app.use(express.urlencoded({ limit : '3mb', extended: true }));
     app.use(corsMiddleware)
 
     // Health check route
@@ -27,6 +28,7 @@ const initializeApp = async () => {
     });
 
     app.use("/api/v1/auth", authRoutes);
+    app.use("/api/v1/user", userRoutes);
 
     // Database connection
     await getSecondaryConnection();
